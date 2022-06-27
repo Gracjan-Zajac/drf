@@ -6,7 +6,7 @@ from .models import Product
 from .serializers import ProductSerializer
 
 
-class ProductCeateAPIView(generics.CreateAPIView):
+class ProductListCeateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -24,3 +24,12 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # lookup_field = 'pk'
+
+
+class ProductListAPIView(generics.ListAPIView):
+    """
+    Not gonna use this method
+    """
+
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
