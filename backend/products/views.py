@@ -1,7 +1,4 @@
-from operator import ge
-from tkinter.messagebox import NO
-from turtle import title
-from rest_framework import generics
+from rest_framework import authentication, generics, mixins, permissions
 
 from .models import Product
 from .serializers import ProductSerializer
@@ -10,6 +7,8 @@ from .serializers import ProductSerializer
 class ProductListCeateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         # serializer.save(user=self.request.user)
@@ -54,3 +53,31 @@ class ProductListAPIView(generics.ListAPIView):
 
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+
+class ProductMixinView(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    generics.GenericAPIView
+):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        if pk is not None:
+            return self.retrieve(request, *args, **kwargs)
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        print(serializer.validated_data)
+        title = serializer.validated_data.get("title")
+        content = serializer.validated_data.get("content") or None
+        if content is None:
+            content = "Default content"
+        serializer.save(content=content)
