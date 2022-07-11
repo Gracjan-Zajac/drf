@@ -1,4 +1,3 @@
-from math import prod
 import requests
 
 product_id = input("What is the product id you want to use?\n")
