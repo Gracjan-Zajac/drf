@@ -1,5 +1,3 @@
-from email.errors import FirstHeaderLineIsContinuationDefect
-import imp
 from rest_framework import permissions
 
 
