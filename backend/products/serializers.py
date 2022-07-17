@@ -1,9 +1,8 @@
-from wsgiref.validate import validator
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
 from .models import Product
-from .validators import validate_title
+from . import validators
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -13,12 +12,14 @@ class ProductSerializer(serializers.ModelSerializer):
     edit_url = serializers.SerializerMethodField(read_only=True)
     delete_url = serializers.SerializerMethodField(read_only=True)
     # email = serializers.EmailField(write_only=True)
-    title = serializers.CharField(validators=[validate_title])
+    title = serializers.CharField(
+        validators=[validators.validate_title_no_hello, validators.uniqe_product_title])
 
     class Meta:
         model = Product
         fields = [
             'pk',
+            # 'user',
             'title',
             # 'email',
             'content',
